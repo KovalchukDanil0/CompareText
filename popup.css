@@ -1,0 +1,12 @@
+html {
+    width: 750px;
+}
+
+html * {
+    font-size: large !important;
+}
+
+.block {
+    padding-left: 20px;
+    padding-right: 20px;
+}
