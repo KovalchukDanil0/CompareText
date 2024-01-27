@@ -1,6 +1,6 @@
 const compareFunc = function () {
-  const text1 = document.getElementById("text1").value;
-  const text2 = document.getElementById("text2").value;
+  const text1 = removeExtraSpaces(document.getElementById("text1").value);
+  const text2 = removeExtraSpaces(document.getElementById("text2").value);
 
   const dmp = new diff_match_patch();
   const d = dmp.diff_main(text1, text2);
@@ -20,6 +20,10 @@ const compareFunc = function () {
     statusBar.parentElement.classList.remove("is-success");
     statusBar.parentElement.classList.add("message", "is-danger");
   }
+};
+
+const removeExtraSpaces = function (str) {
+  return str.replace(/\s+/g, " ").trim();
 };
 
 const compareBut = document.getElementById("compare");
