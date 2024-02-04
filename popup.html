@@ -6,6 +6,7 @@
     <title>Compare Text</title>
 
     <script src="./diff_match_patch.js"></script>
+    <script src="./node_modules/webextension-polyfill/dist/browser-polyfill.min.js"></script>
 
     <link rel="stylesheet" href="./node_modules/bulma/css/bulma.min.css" />
     <link rel="stylesheet" href="./popup.css" />
@@ -19,19 +20,20 @@
       <textarea
         class="textarea is-primary"
         id="text1"
-        placeholder="text 1"
+        placeholder="Original text"
         rows="3"
       ></textarea>
       <textarea
         class="textarea is-info"
         id="text2"
-        placeholder="text 2"
+        placeholder="Text to compare"
         rows="3"
       ></textarea>
     </div>
 
     <div class="block">
       <button class="button is-info" id="compare">Compare</button>
+      <button class="button is-danger" id="clear">Clear</button>
     </div>
 
     <article class="message is-warning">

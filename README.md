@@ -1,6 +1,6 @@
-# Text Compare chrome extenion
+# Text Compare chrome extension
 
-This extension allows you to compare / diff text just in your browser!
+This extension allows you to compare / diff text just in your browser! Free and Open Source
 
 ![Popup image](images/popup.png "Popup image")
 
