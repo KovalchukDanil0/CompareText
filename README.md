@@ -6,4 +6,4 @@ This extension allows you to compare / diff text just in your browser! Free and 
 
 ## Download
 
-You can download this extension [here](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff)
+[You can download this extension here](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff)
