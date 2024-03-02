@@ -2,6 +2,6 @@ const port = 3000;
 
 // tiny wrapper with default env vars
 module.exports = {
-  NODE_ENV: process.env.NODE_ENV || 'development',
+  NODE_ENV: process.env.NODE_ENV || "development",
   PORT: process.env.PORT || port,
 };

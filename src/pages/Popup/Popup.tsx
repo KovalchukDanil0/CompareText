@@ -1,4 +1,4 @@
-import { diffChars } from "diff";
+import { Change, diffChars } from "diff";
 import { Alert, Button, Spinner, Textarea } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import Browser from "webextension-polyfill";
@@ -12,7 +12,11 @@ let diffText: HTMLParagraphElement;
 let statusBar: HTMLSpanElement;
 const statusBarDefText: string = "Compare output";
 
-let data: { [key: string]: string } = { text1: "", text2: "" };
+interface Data {
+  text1: string;
+  text2: string;
+}
+let data: Data;
 
 function compare() {
   const one: string = text1.value,
@@ -20,12 +24,12 @@ function compare() {
 
   let span: HTMLSpanElement;
 
-  const diff = diffChars(one, other),
+  const diff: Change[] = diffChars(one, other),
     fragment: DocumentFragment = document.createDocumentFragment();
 
   diffText.textContent = "";
 
-  diff.forEach((part) => {
+  diff.forEach((part: Change) => {
     // green for additions, red for deletions
     // grey for common parts
     const color = part.added
@@ -65,10 +69,8 @@ function clearFields() {
 }
 
 function saveSettings(event: React.MouseEvent<HTMLTextAreaElement>) {
-  const elm = event.target as HTMLTextAreaElement;
-
-  const data: { [key: string]: string } = {};
-  data[elm.id] = elm.value;
+  const elm: HTMLTextAreaElement = event.currentTarget;
+  data[elm.id as keyof typeof data] = elm.value;
 
   Browser.storage.local.set(data);
 }
@@ -82,7 +84,7 @@ const Popup = (): React.JSX.Element => {
     diffText = document.getElementById("diffText") as HTMLParagraphElement;
     statusBar = document.getElementById("statusBar") as HTMLSpanElement;
 
-    data = await Browser.storage.local.get();
+    data = (await Browser.storage.local.get()) as Data;
 
     setIsLoading(false);
   }

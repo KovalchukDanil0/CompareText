@@ -9,9 +9,12 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const ReactRefreshTypeScript = require("react-refresh-typescript");
 const pkg = require("./package.json");
-const ChromeExtensionManifest = require("chrome-extension-manifest-webpack-plugin");
 
 const ASSET_PATH = process.env.ASSET_PATH || "/";
+
+process.env.version = pkg.version;
+process.env.description = pkg.description;
+process.env.homepage_url = pkg.repository.url;
 
 const alias = {};
 
@@ -132,14 +135,25 @@ const options = {
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin(["NODE_ENV"]),
-    new ChromeExtensionManifest({
-      inputFile: "src/manifest.json",
-      outputFile: path.join(__dirname, "build", "manifest.json"),
-      props: {
-        version: pkg.version,
-        description: pkg.description,
-        homepage_url: pkg.repository.url,
-      },
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "src/manifest.json",
+          to: path.join(__dirname, "build"),
+          force: true,
+          transform(content) {
+            // generates the manifest file using the package.json informations
+            return Buffer.from(
+              JSON.stringify({
+                description: process.env.description,
+                version: process.env.version,
+                homepage_url: process.env.homepage_url,
+                ...JSON.parse(content.toString()),
+              }),
+            );
+          },
+        },
+      ],
     }),
     new CopyWebpackPlugin({
       patterns: [
