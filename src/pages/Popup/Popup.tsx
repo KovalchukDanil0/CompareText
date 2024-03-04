@@ -10,7 +10,7 @@ let text2: HTMLTextAreaElement;
 let diffText: HTMLParagraphElement;
 
 let statusBar: HTMLSpanElement;
-const statusBarDefText: string = "Compare output";
+const statusBarDefText = "Compare output";
 
 interface Data {
   text1: string;
