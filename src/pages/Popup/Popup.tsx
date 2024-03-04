@@ -19,8 +19,8 @@ interface Data {
 let data: Data;
 
 function compare() {
-  const one: string = text1.value,
-    other: string = text2.value;
+  const one: string = text1.value.trim(),
+    other: string = text2.value.trim();
 
   let span: HTMLSpanElement;
 

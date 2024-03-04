@@ -10,11 +10,11 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const ReactRefreshTypeScript = require("react-refresh-typescript");
 const pkg = require("./package.json");
 
-const ASSET_PATH = process.env.ASSET_PATH || "/";
-
 process.env.version = pkg.version;
 process.env.description = pkg.description;
 process.env.homepage_url = pkg.repository.url;
+
+const ASSET_PATH = process.env.ASSET_PATH || "/";
 
 const alias = {};
 
