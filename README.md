@@ -26,4 +26,4 @@ Transform your browsing experience with Text Compare Companion. **Download** now
 
 ## Download
 
-[You can download this extension here](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff)
+You can download this extension for [Chrome](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/compare-text)
