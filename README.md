@@ -1,4 +1,4 @@
-# Text Comparison Companion
+# Text Compare Chrome / Firefox extension
 
 ![Popup image](images/popup.png "Popup image")
 
