@@ -6,5 +6,5 @@ import "../../assets/css/tailwind.css";
 import "./index.css";
 
 const container = document.getElementById("app-container");
-const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+const root = createRoot(container!);
 root.render(<Popup />);
