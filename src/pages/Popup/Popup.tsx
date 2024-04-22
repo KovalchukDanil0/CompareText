@@ -1,14 +1,9 @@
 import { Change, diffChars } from "diff";
 import { Alert, Button, Spinner, Textarea } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HiInformationCircle } from "react-icons/hi";
 import Browser from "webextension-polyfill";
 import "./Popup.css";
-
-let text1: HTMLTextAreaElement;
-let text2: HTMLTextAreaElement;
-
-let diffText: HTMLParagraphElement;
 
 const statusBarDefText = "Compare output";
 
@@ -16,48 +11,78 @@ interface Data {
   text1: string;
   text2: string;
 }
-let data: Data;
-
-function partRemoved(part: Change) {
-  return part.removed ? "text-red-500" : "text-gray-500";
-}
-
-function saveSettings(event: React.MouseEvent<HTMLTextAreaElement>) {
-  const elm: HTMLTextAreaElement = event.currentTarget;
-  data[elm.id as keyof typeof data] = elm.value;
-
-  Browser.storage.local.set(data);
-}
 
 function textAreaAdjust(
   ev:
-    | React.KeyboardEvent<HTMLTextAreaElement>
+    | React.FormEvent<HTMLTextAreaElement>
     | React.FocusEvent<HTMLTextAreaElement>,
 ) {
   const elm: HTMLTextAreaElement = ev.currentTarget;
 
-  elm.style.height = "1px";
-  elm.style.height = `${25 + elm.scrollHeight}px`;
-}
-
-function scrollToBottom() {
-  window.scrollTo(0, document.body.scrollHeight);
+  elm.style.height = "auto";
+  elm.style.height = elm.scrollHeight + "px";
 }
 
 export default function Popup(): React.JSX.Element {
-  const [isLoading, setIsLoading] = useState(true);
   const [isIdentical, setIsIdentical] = useState<boolean | null>(null);
+  const [data, setData] = useState<Data | null>(null);
+
+  const text1Ref = useRef<HTMLTextAreaElement>(null);
+  const text2Ref = useRef<HTMLTextAreaElement>(null);
+
+  const diffTextRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    assignVariables();
+  }, []);
+
+  async function assignVariables() {
+    const dataTemp = (await Browser.storage.local.get()) as Data;
+
+    console.log(dataTemp);
+
+    setData(dataTemp);
+  }
+
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, [isIdentical]);
+
+  function partRemoved(part: Change) {
+    return part.removed ? "text-red-500" : "text-gray-500";
+  }
+
+  function saveSettings(event: React.FormEvent<HTMLTextAreaElement>) {
+    if (data == null) {
+      return;
+    }
+
+    console.log(data);
+
+    const elm: HTMLTextAreaElement = event.currentTarget;
+    data[elm.id as keyof typeof data] = elm.value;
+
+    Browser.storage.local.set(data);
+  }
 
   function compare() {
-    const one: string = text1.value.trim(),
-      other: string = text2.value.trim();
+    if (
+      text1Ref.current == null ||
+      text2Ref.current == null ||
+      diffTextRef.current == null
+    ) {
+      return;
+    }
+
+    const one: string = text1Ref.current.value.trim(),
+      other: string = text2Ref.current.value.trim();
 
     let span: HTMLSpanElement;
 
     const diff: Change[] = diffChars(one, other),
       fragment: DocumentFragment = document.createDocumentFragment();
 
-    diffText.textContent = "";
+    diffTextRef.current.textContent = "";
 
     diff.forEach((part: Change) => {
       // green for additions, red for deletions
@@ -69,7 +94,7 @@ export default function Popup(): React.JSX.Element {
       fragment.appendChild(span);
     });
 
-    diffText.appendChild(fragment);
+    diffTextRef.current?.appendChild(fragment);
 
     if (diff.length === 1) {
       setIsIdentical(true);
@@ -77,73 +102,63 @@ export default function Popup(): React.JSX.Element {
       setIsIdentical(false);
     }
 
-    scrollToBottom();
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   function clearFields() {
+    if (
+      text1Ref.current == null ||
+      text2Ref.current == null ||
+      diffTextRef.current == null
+    ) {
+      return;
+    }
+
     Browser.storage.local.set({ text1: "", text2: "" });
 
-    text1.value = "";
-    text1.style.height = "";
+    text1Ref.current.value = "";
+    text1Ref.current.style.height = "";
 
-    text2.value = "";
-    text2.style.height = "";
+    text2Ref.current.value = "";
+    text2Ref.current.style.height = "";
 
-    diffText.innerHTML = statusBarDefText;
+    diffTextRef.current.innerHTML = statusBarDefText;
 
     setIsIdentical(null);
   }
 
-  async function assignVariables() {
-    text1 = document.getElementById("text1") as HTMLTextAreaElement;
-    text2 = document.getElementById("text2") as HTMLTextAreaElement;
-    diffText = document.getElementById("diffText") as HTMLParagraphElement;
-
-    data = (await Browser.storage.local.get()) as Data;
-
-    setIsLoading(false);
-  }
-
-  useEffect(() => {
-    assignVariables();
-
-    if (isIdentical != null) {
-      scrollToBottom();
-    }
-  });
-
-  if (isLoading) {
-    return (
-      <div className="grid h-44 place-items-center">
-        <Spinner aria-label="Default status example" />
-      </div>
-    );
+  if (data == null) {
+    return <Spinner />;
   }
 
   return (
     <div className="dark flex flex-col gap-3 p-3">
       <Textarea
         shadow
+        ref={text1Ref}
         onFocus={textAreaAdjust}
-        onKeyUp={textAreaAdjust}
-        onInput={saveSettings}
+        onInput={(ev) => {
+          saveSettings(ev);
+          textAreaAdjust(ev);
+        }}
         defaultValue={data.text1}
-        className="text-lg"
-        id="text1"
+        className="h-44 overflow-y-hidden text-lg"
         placeholder="Original text"
-        rows={6}
+        id="text1"
       />
 
       <Textarea
         shadow
+        ref={text2Ref}
         onFocus={textAreaAdjust}
-        onKeyUp={textAreaAdjust}
-        onInput={saveSettings}
+        onInput={(ev) => {
+          saveSettings(ev);
+          textAreaAdjust(ev);
+        }}
         defaultValue={data.text2}
-        className="text-lg"
-        id="text2"
+        className="h-44 overflow-y-hidden text-lg"
         placeholder="Text to compare"
-        rows={6}
+        id="text2"
       />
 
       <div className="sticky bottom-5 top-5 flex flex-row gap-3">
@@ -156,7 +171,7 @@ export default function Popup(): React.JSX.Element {
       </div>
 
       <Alert color="indigo" rounded={false}>
-        <p id="diffText" className="text-xl">
+        <p ref={diffTextRef} className="text-xl">
           {statusBarDefText}
         </p>
       </Alert>
