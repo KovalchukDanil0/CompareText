@@ -1,4 +1,5 @@
 import Browser, { Menus } from "webextension-polyfill";
+import { SavedData } from "../../shared";
 
 Browser.runtime.onInstalled.addListener(function () {
   Browser.contextMenus.create({
@@ -8,15 +9,15 @@ Browser.runtime.onInstalled.addListener(function () {
   });
 });
 
-const menusOnClick = async function (info: Menus.OnClickData) {
+async function menusOnClick(info: Menus.OnClickData) {
   if (info.menuItemId !== "compareText") {
     return;
   }
 
-  const saveData: { [key: string]: string } = {};
+  const saveData: SavedData = {};
   saveData["text2"] = info.selectionText!;
 
   Browser.storage.local.set(saveData);
-};
+}
 
 Browser.contextMenus.onClicked.addListener(menusOnClick);

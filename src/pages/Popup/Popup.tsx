@@ -4,14 +4,9 @@ import { useAsync } from "react-async";
 import { Alert, Button, Loading, Textarea } from "react-daisyui";
 import { HiCheckCircle, HiExclamationCircle } from "react-icons/hi";
 import Browser from "webextension-polyfill";
-import "./Popup.scss";
+import { SavedData } from "../../shared";
 
 const statusBarDefText = "Compare output";
-
-interface Data {
-  text1: string;
-  text2: string;
-}
 
 function textAreaAdjust(
   ev:
@@ -28,7 +23,10 @@ function partRemoved(part: Change) {
   return part.removed ? "text-red-800" : "text-gray-800";
 }
 
-function saveSettings(event: React.FormEvent<HTMLTextAreaElement>, data: Data) {
+function saveSettings(
+  event: React.FormEvent<HTMLTextAreaElement>,
+  data: SavedData,
+) {
   if (data == null) {
     return;
   }
@@ -59,7 +57,7 @@ function ReactDocumentFragment({ diff }: Readonly<{ diff: Change[] }>) {
 }
 
 async function loadPlayer() {
-  return (await Browser.storage.local.get()) as Data;
+  return (await Browser.storage.local.get()) as SavedData;
 }
 
 export default function Popup() {
