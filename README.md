@@ -1,7 +1,7 @@
-<center>
-<image style="text-align: center;" src="src/assets/img/icon-128.png" />
+<p style="text-align: center;">
+<img style="text-align: center;" src="src/assets/img/icon-128.png" />
 <p>Text Compare is modern, open-source <b>Chrome</b> / <b>Firefox</b> extension. It uses <b>React</b>, <b>Typescript</b> and <b>Scss</b> as a base and has build-in supports of <b>Tailwind Css</b> and <b>Browser Extension polyfill</b> for better development experience.</p>
-</center>
+</p>
 
 ![React](https://img.shields.io/badge/react-18-green)
 ![Typescript](https://img.shields.io/badge/typescript-5-blue)
