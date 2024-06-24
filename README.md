@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<p style="text-align: center;">
 
 ![extension logo](src/assets/img/icon-128.png)
 
@@ -13,7 +13,7 @@ Text Compare is modern, open-source **Chrome** / **Firefox** extension. It uses 
 ![Web Extension polyfill](https://img.shields.io/badge/webextension_polyfill-0.10-red)
 ![Webpack](https://img.shields.io/badge/webextension-0.10-azure)
 
-</div>
+</p>
 
 ## Features
 
