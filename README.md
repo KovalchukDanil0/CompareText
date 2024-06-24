@@ -1,4 +1,4 @@
-<p style="text-align: center;">
+<p align="center">
 <img style="text-align: center;" src="src/assets/img/icon-128.png" />
 <p>Text Compare is modern, open-source <b>Chrome</b> / <b>Firefox</b> extension. It uses <b>React</b>, <b>Typescript</b> and <b>Scss</b> as a base and has build-in supports of <b>Tailwind Css</b> and <b>Browser Extension polyfill</b> for better development experience.</p>
 </p>
