@@ -1,29 +1,37 @@
-# Text Compare Chrome / Firefox extension
+<div style="text-align: center;">
 
-![Popup image](images/popup.png "Popup image")
+![extension logo](src/assets/img/icon-128.png)
 
-## Description
+Text Compare is modern, open-source **Chrome** / **Firefox** extension. It uses **React**, **Typescript** and **Scss** as a base and has build-in supports of **Tailwind Css** and **Browser Extension polyfill** for better development experience.
 
-Elevate your browsing experience with Text Compare Companion, a versatile **Chrome** and **Firefox** extension meticulously crafted with **React** and **Tailwind CSS**. Seamlessly integrated into your browser, this powerful tool empowers you to effortlessly compare two texts from any webpage, providing invaluable insights and enhancing your productivity.
+![React](https://img.shields.io/badge/react-18-green)
+![Typescript](https://img.shields.io/badge/typescript-5-blue)
+![Ts-Node](https://img.shields.io/badge/ts--node-10-aqua)
+![Sass](https://img.shields.io/badge/sass-1.7-pink)
+![TailwindCss](https://img.shields.io/badge/tailwindcss-3-navy)
+![DaisyUi](https://img.shields.io/badge/daisyui-4-yellow)
+![Web Extension polyfill](https://img.shields.io/badge/webextension_polyfill-0.10-red)
+![Webpack](https://img.shields.io/badge/webextension-0.10-azure)
+
+</div>
 
 ## Features
 
-1. **Effortless Text Comparison**: With just a few clicks, compare two texts side by side directly within your browser. Whether you're reviewing articles, researching topics, or comparing data, this extension streamlines the process for you.
+It can compare two texts in popup widow without entering a new site, also you can select any text on website and compare it thought the browser context menu, yes that's really that simple...
 
-2. **Flexibility and Versatility**: Enjoy the flexibility to compare texts from any webpage, regardless of its content or format. Whether it's a news article, a research paper, or a forum discussion, Text Compare Companion adapts to your needs.
-
-3. **Intuitive Interface**: Designed with user experience in mind, the extension offers an intuitive interface that is easy to navigate and understand. Accessible controls and clear visuals ensure a smooth and seamless experience.
-
-4. **React and Tailwind CSS**: Leveraging the power of React and the sleek design of Tailwind CSS, Text Compare Companion delivers a modern and responsive user interface. Enjoy a visually appealing and highly functional extension that enhances your browsing experience.
-
-5. **Enhanced Productivity**: Save time and effort with this productivity-boosting tool. Quickly identify similarities and differences between texts, streamline your research process, and make informed decisions with confidence.
-
-6. **Free and Open Source**: Text Compare Companion is not only **free** to use but also **open source**, allowing you to explore and contribute to its development. Access the source code to the past text, ensuring transparency and trustworthiness in your browsing experience.
-
-7. **Secure and Reliable**: Rest assured knowing that Text Compare Companion prioritizes your security and privacy. The extension is built with robust security measures to ensure a safe browsing experience at all times.
-
-Transform your browsing experience with Text Compare Companion. **Download** now and unlock the power of effortless text comparison right at your fingertips.
+![Popup image](images/popup.png "Popup image")
 
 ## Download
 
-You can download this extension for [Chrome](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/compare-text)
+You can download this extension for [Chrome](https://chromewebstore.google.com/detail/ofnnoijleohfbahefkogohahdnjodaff) or [Firefox](https://addons.mozilla.org/en-US/firefox/addon/compare-text)
+
+Also it can be built from source:
+
+- clone repository
+- run `npm install`
+- then `npm run build`
+- load unpacked /build folder in extensions page or use zip file in /zip folder
+
+## References
+
+Used template: [browser-extension-boilerplate-typescript-react](https://github.com/KovalchukDanil0/browser-extension-boilerplate-typescript-react) based on [chrome-extension-boilerplate-react](https://github.com/lxieyang/chrome-extension-boilerplate-react)
