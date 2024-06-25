@@ -11,7 +11,7 @@ Text Compare is modern, open-source **Chrome** / **Firefox** extension. It uses 
 ![TailwindCss](https://img.shields.io/badge/tailwindcss-3-navy)
 ![DaisyUi](https://img.shields.io/badge/daisyui-4-yellow)
 ![Web Extension polyfill](https://img.shields.io/badge/webextension_polyfill-0.10-red)
-![Webpack](https://img.shields.io/badge/webextension-0.10-azure)
+![Webpack](https://img.shields.io/badge/webpack-5-azure)
 
 </div>
 
