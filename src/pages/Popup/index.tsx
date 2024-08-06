@@ -6,5 +6,9 @@ import "../../assets/css/tailwind.scss";
 import "./index.scss";
 
 const container = document.getElementById("app-container");
-const root = createRoot(container!);
+if (!container) {
+  throw new Error("Critical Error - root element was not found");
+}
+
+const root = createRoot(container);
 root.render(<Popup />);

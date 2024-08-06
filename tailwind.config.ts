@@ -1,5 +1,6 @@
 import daisyui from "daisyui";
 import { Config } from "tailwindcss";
+import tailwindcssAnimated from "tailwindcss-animated";
 
 const tailwind: Config = {
   content: [
@@ -8,7 +9,7 @@ const tailwind: Config = {
     "node_modules/react-daisyui/dist/**/*.js",
   ],
   darkMode: "class",
-  plugins: [daisyui],
+  plugins: [daisyui, tailwindcssAnimated],
 };
 
 export default tailwind;

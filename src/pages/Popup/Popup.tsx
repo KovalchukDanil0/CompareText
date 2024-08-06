@@ -1,17 +1,51 @@
 import { Change, diffChars } from "diff";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, {
+  FocusEvent,
+  FormEvent,
+  ReactNode,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import { useAsync } from "react-async";
 import { Alert, Button, Loading, Textarea } from "react-daisyui";
-import { HiCheckCircle, HiExclamationCircle } from "react-icons/hi";
 import Browser from "webextension-polyfill";
+import { create } from "zustand";
+import ReactDocumentFragment, {
+  statusBarDefText,
+} from "../../containers/ReactDocumentFragment";
+import StatusAlert from "../../containers/StatusAlert";
 import { SavedData } from "../../shared";
 
-const statusBarDefText = "Compare output";
+type IsIdenticalType = boolean | null;
+export type IsIdenticalFunctionType = (isIdentical: IsIdenticalType) => void;
+
+type DiffTextType = ReactNode | string;
+
+let text1Ref: RefObject<HTMLTextAreaElement>;
+let text2Ref: RefObject<HTMLTextAreaElement>;
+
+const useStateCompare = create<{
+  isIdentical: IsIdenticalType;
+  setIsIdentical: IsIdenticalFunctionType;
+  diffText: DiffTextType;
+  setDiffText: (diffText: DiffTextType) => void;
+}>((set) => ({
+  isIdentical: null,
+  setIsIdentical: (isIdentical) =>
+    set(() => ({
+      isIdentical,
+    })),
+  diffText: statusBarDefText,
+  setDiffText: (diffText) =>
+    set(() => ({
+      diffText,
+    })),
+}));
 
 function textAreaAdjust(
-  ev:
-    | React.FormEvent<HTMLTextAreaElement>
-    | React.FocusEvent<HTMLTextAreaElement>,
+  ev: FormEvent<HTMLTextAreaElement> | FocusEvent<HTMLTextAreaElement>,
 ) {
   const elm: HTMLTextAreaElement = ev.currentTarget;
 
@@ -19,15 +53,11 @@ function textAreaAdjust(
   elm.style.height = elm.scrollHeight + "px";
 }
 
-function partRemoved(part: Change) {
-  return part.removed ? "text-red-800" : "text-gray-800";
-}
-
 function saveSettings(
-  event: React.FormEvent<HTMLTextAreaElement>,
-  data: SavedData,
+  event: FormEvent<HTMLTextAreaElement>,
+  data: SavedData | undefined,
 ) {
-  if (data == null) {
+  if (!data) {
     return;
   }
 
@@ -37,83 +67,70 @@ function saveSettings(
   Browser.storage.local.set(data);
 }
 
-function ReactDocumentFragment({ diff }: Readonly<{ diff: Change[] }>) {
-  if (diff.length === 1 && diff[0].value === "") {
-    return statusBarDefText;
+function compare() {
+  if (!text1Ref.current || !text2Ref.current) {
+    return;
   }
 
-  return (
-    <div>
-      {diff.map((part) => {
-        const color = part.added ? "text-green-800" : partRemoved(part);
-        return (
-          <span key={part.value} className={color}>
-            {part.value}
-          </span>
-        );
-      })}
-    </div>
-  );
+  const one: string = text1Ref.current.value.trim(),
+    other: string = text2Ref.current.value.trim();
+
+  const diff: Change[] = diffChars(one, other);
+
+  useStateCompare.setState({
+    diffText: ReactDocumentFragment({ diff }),
+    isIdentical: diff.length === 1,
+  });
 }
 
-async function loadPlayer() {
-  return (await Browser.storage.local.get()) as SavedData;
+function clearFields() {
+  if (!text1Ref.current || !text2Ref.current) {
+    return;
+  }
+
+  Browser.storage.local.set({ text1: "", text2: "" });
+
+  text1Ref.current.value = "";
+  text1Ref.current.style.height = "";
+
+  text2Ref.current.value = "";
+  text2Ref.current.style.height = "";
+
+  useStateCompare.setState({
+    diffText: statusBarDefText,
+    isIdentical: null,
+  });
+}
+
+async function initVariables() {
+  return Browser.storage.local.get() as SavedData;
 }
 
 export default function Popup() {
-  const { data, error, isPending } = useAsync({ promiseFn: loadPlayer });
+  const { data, error, isPending } = useAsync({ promiseFn: initVariables });
+  const { isIdentical, setIsIdentical, diffText } = useStateCompare();
 
-  const [isIdentical, setIsIdentical] = useState<boolean | null>(null);
-  const [diffText, setDiffText] = useState<ReactNode | string>(
-    statusBarDefText,
+  const adjustAndSaveSettings = useCallback(
+    (ev: FormEvent<HTMLTextAreaElement>) => {
+      textAreaAdjust(ev);
+      saveSettings(ev, data);
+    },
+    [data],
   );
 
-  const text1Ref = useRef<HTMLTextAreaElement>(null);
-  const text2Ref = useRef<HTMLTextAreaElement>(null);
+  text1Ref = useRef<HTMLTextAreaElement>(null);
+  text2Ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
-  }, [isIdentical]);
+  }, [diffText]);
 
   if (isPending) {
     return <Loading />;
   }
 
-  if (error || data == null) {
+  if (error || !data) {
     return `Something went wrong: ${error?.message ?? "savedData is undefined"}`;
-  }
-
-  function compare() {
-    if (text1Ref.current == null || text2Ref.current == null) {
-      return;
-    }
-
-    const one: string = text1Ref.current.value.trim(),
-      other: string = text2Ref.current.value.trim();
-
-    const diff: Change[] = diffChars(one, other);
-
-    setDiffText(ReactDocumentFragment({ diff }));
-    setIsIdentical(diff.length === 1);
-
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-
-  function clearFields() {
-    if (text1Ref.current == null || text2Ref.current == null) {
-      return;
-    }
-
-    Browser.storage.local.set({ text1: "", text2: "" });
-
-    text1Ref.current.value = "";
-    text1Ref.current.style.height = "";
-
-    text2Ref.current.value = "";
-    text2Ref.current.style.height = "";
-
-    setDiffText(statusBarDefText);
-    setIsIdentical(null);
   }
 
   return (
@@ -121,10 +138,7 @@ export default function Popup() {
       <Textarea
         ref={text1Ref}
         onFocus={textAreaAdjust}
-        onInput={(ev) => {
-          saveSettings(ev, data);
-          textAreaAdjust(ev);
-        }}
+        onInput={adjustAndSaveSettings}
         defaultValue={data.text1}
         className="h-44 overflow-y-hidden text-lg"
         placeholder="Original text"
@@ -134,10 +148,7 @@ export default function Popup() {
       <Textarea
         ref={text2Ref}
         onFocus={textAreaAdjust}
-        onInput={(ev) => {
-          saveSettings(ev, data);
-          textAreaAdjust(ev);
-        }}
+        onInput={adjustAndSaveSettings}
         defaultValue={data.text2}
         className="h-44 overflow-y-hidden text-lg"
         placeholder="Text to compare"
@@ -153,25 +164,15 @@ export default function Popup() {
         </Button>
       </div>
 
-      <Alert status="info">
+      <Alert>
         <p className="text-xl">{diffText}</p>
       </Alert>
 
       {isIdentical != null && (
-        <Alert
-          icon={
-            isIdentical ? (
-              <HiCheckCircle className="size-5" />
-            ) : (
-              <HiExclamationCircle className="size-5" />
-            )
-          }
-          status={isIdentical ? "success" : "error"}
-        >
-          <span id="statusBar" className="text-2xl">
-            TEXTS ARE {isIdentical ? "IDENTICAL" : "DIFFERENT"}
-          </span>
-        </Alert>
+        <StatusAlert
+          isIdentical={isIdentical}
+          setIsIdentical={setIsIdentical}
+        />
       )}
     </div>
   );

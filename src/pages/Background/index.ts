@@ -15,7 +15,7 @@ async function menusOnClick(info: Menus.OnClickData) {
   }
 
   const saveData: SavedData = {};
-  saveData["text2"] = info.selectionText!;
+  saveData["text2"] = info.selectionText;
 
   Browser.storage.local.set(saveData);
 }
