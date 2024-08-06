@@ -19,7 +19,7 @@ Text Compare is modern, open-source **Chrome** / **Firefox** extension. It uses 
 
 It can compare two texts in popup window without the external site need, also you can select any text on website and compare it thought the browser context menu, yes that's really that simple!
 
-![Popup image](images/popup.png "Popup image")
+![Popup image](src/images/popup.png "Popup image")
 
 ## Download
 
