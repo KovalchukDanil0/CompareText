@@ -8,8 +8,12 @@
     "url": "https://github.com/KovalchukDanil0/CompareText.git"
   },
   "scripts": {
-    "build": "NODE_ENV=production ts-node utils/build.ts",
-    "start": "NODE_ENV=development ts-node utils/webserver.ts",
+    "build": "npm run build:chrome",
+    "build:chrome": "NODE_ENV=production BROWSER=chrome ts-node utils/build.ts",
+    "build:firefox": "NODE_ENV=production BROWSER=firefox ts-node utils/build.ts",
+    "start": "npm run start:chrome",
+    "start:chrome": "NODE_ENV=development BROWSER=chrome ts-node utils/webserver.ts",
+    "start:firefox": "NODE_ENV=development BROWSER=firefox ts-node utils/webserver.ts",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
   },
   "dependencies": {

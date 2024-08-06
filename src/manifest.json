@@ -18,8 +18,5 @@
     "default_title": "Click to open popup",
     "default_popup": "popup.html"
   },
-  "background": {
-    "service_worker": "background.bundle.js"
-  },
   "permissions": ["storage", "contextMenus"]
 }

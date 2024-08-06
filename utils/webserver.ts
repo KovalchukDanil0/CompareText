@@ -1,10 +1,20 @@
 import path from "path";
-import webpack from "webpack";
+import webpack, { EntryObject } from "webpack";
 import WebpackDevServer from "webpack-dev-server";
 import config from "../webpack.config";
 import env from "./env";
 
-config.devtool = "cheap-module-source-map";
+const notHotReload = ["background", "contentScript", "devtools"];
+
+for (const entryName in config.entry as EntryObject) {
+  if (notHotReload.includes(entryName)) {
+    (config.entry as EntryObject)[entryName] = [
+      "webpack/hot/dev-server",
+      `webpack-dev-server/client?hot=true&hostname=localhost&port=${env.PORT}`,
+      (config.entry as EntryObject)[entryName] as string,
+    ];
+  }
+}
 
 const compiler = webpack(config);
 
